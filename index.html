@@ -13,7 +13,12 @@
 
     <link rel="stylesheet" href="style.css" />
 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     <script defer src="script.js"></script>
+    <!-- By the time when our script is loaded the browser must already have downloaded the leaflet library -->
+    <!-- Any global variable defined in the script are accessible in the script which is added afterward. Like if there are multiple scripts added above the script.js then script.js will have access of its variables but other script will not have access to the script.js because while reading the other scripts . The script.js is not initialized yet.   -->
     <title>mapty // Map your workouts</title>
   </head>
   <body>
