@@ -11,6 +11,47 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
+class workout {
+    date = new Date();
+    id = (Date.now() + '').slice(-10)
+    constructor(coords, distance, duration) {
+        this.coords = coords;
+        this.distance = distance;
+        this.duration =duration ;
+    }
+}
+
+class running extends workout {
+    constructor(coords, distance, duration, cadence) {
+        super(coords, distance, duration);
+        this.cadence = cadence;
+        this.calcPace();
+    }
+
+    calcPace(){
+        //min/km
+        this.pace = this.duration / this.distance
+        return this.pace
+    }
+}
+class cycling extends workout {
+    constructor(coords, distance, duration, elevationGain) {
+        super(coords, distance, duration);
+        this.elevationGain = elevationGain;
+        this.calcSpeed();
+    }
+
+    calcSpeed(){
+        // km/h
+        this.speed = this.distance / (this.duration / 60)
+        return this.speed;
+    }
+}
+
+// const run1 = new running([39,-12],5.2,24,78);
+// const cycling1 = new cycling([39,-12],27,95,523)
+// console.log(run1,cycling1)
+
 class App {
     #map;
     #mapEvent
@@ -55,23 +96,60 @@ class App {
         inputCadence.closest('.form__row').classList.toggle('form__row--hidden')
     }
 
-    _newNetwork(e){
+    _newNetwork(e){ 
         e.preventDefault()
-            // clear the input fields
+        const validInputs = (...inputs) => inputs.every(inp => Number.isFinite(inp) )
+        const allPositive = (...inputs) => inputs.every(inp => inp > 0 )
+            // Get data from form & Check if data is valid 
+            const type = inputType.value;
+            const distance = +inputDistance.value;
+            const duration = +inputDuration.value
+            // + sign over here gives us that if the value is array then it will automatically be change into the number
+
+            if(type==='running') {
+                const cadence = +inputCadence.value
+                // check if the data is valid
+                if (
+                    // !Number.isFinite(distance) ||
+                    // !Number.isFinite(duration) ||
+                    // !Number.isFinite(cadence)
+                    // This validation can come from the code
+                    !validInputs(distance,duration,cadence) || !allPositive(distance,duration,cadence)
+                ) { return alert('Input has to be +ve number') }
+                // if workout is running, create running object
+            }
+
+            if(type==='cycling') {
+                const elevation = +inputElevation.value
+                if(!validInputs(distance,duration,elevation) || !allPositive(distance,duration)) {
+                    return alert('Input has to be +ve number')
+                }
+                // if workout is cycling, create cycling object
+            }
+
+
+
+            // Add new object to workout array
+
+            // Render workout on map as marker
+            const {lat,lng} = this.#mapEvent.latlng;
+                L.marker([lat, lng]).addTo(this.#map)
+                .bindPopup(L.popup({
+                    maxWidth: 250,
+                    minWidth: 100,
+                    autoClose: false,
+                    closeOnClick: false,
+                    className: 'running-popup',
+                }
+                ))
+                .setPopupContent('Workout')
+                .openPopup();
+
+            // Render workout in list
+
+            // hide + clear the input fields
             inputDistance.value = inputDuration.value = inputCadence.value = inputElevation.value = ''
-            // Showing the popup
-                        const {lat,lng} = this.#mapEvent.latlng;
-                        L.marker([lat, lng]).addTo(this.#map)
-                        .bindPopup(L.popup({
-                            maxWidth: 250,
-                            minWidth: 100,
-                            autoClose: false,
-                            closeOnClick: false,
-                            className: 'running-popup',
-                        }
-                        ))
-                        .setPopupContent('Workout')
-                        .openPopup();
+        
     }
 }
 
@@ -200,4 +278,12 @@ inputType.addEventListener('change', function(){
 // Lecture 10: Implementation the Architecture
 
 // class with the name and snippet is mentioned above
+
+// Lecture 11: Managing workout data Creating classes
+// implement classes to manage the data for cycling and running workout that are coming from the UI.
+// There is the concept of parent and child classes as Distance and duration is present in both cycling and running while cadence is present in running while elevation gain is present in cycling. 
+
+// Lecture 12: Creating a new workout
+
+
 
