@@ -171,8 +171,10 @@ class App {
                     return alert('Input has to be +ve number')
                 }
                 // if workout is cycling, create cycling object
+                // this object is created from ES6 class cycling inside the ES6 class app.
                 workout = new cycling([lat,lng], distance, duration, elevation)
             }
+            // in this way two or more classes can interact together to give other objects
 
 
 
